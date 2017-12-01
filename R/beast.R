@@ -11,18 +11,20 @@
 ##' @examples
 ##' file <- system.file("extdata/BEAST", "beast_mcc.tree", package="treeio")
 ##' read.beast(file)
-read.beast <- function(file) {
+read.beast <- function(file, n.cores=1) {
     translation <- read.trans_beast(file)
     treetext <- read.treetext_beast(file)
     stats <- read.stats_beast(file)
     phylo <- read.nexus(file)
+    
+    my.lapply <- if (ncores > 1) function(X, FOO, ..., n.cores) lapply(X, FOO, ...) else mclapply
 
     if (length(treetext) == 1) {
         obj <- BEAST(file, treetext, translation, stats, phylo)
     } else {
-        obj <- lapply(seq_along(treetext), function(i) {
+        obj <- my.lapply(seq_along(treetext), function(i) {
             BEAST(file, treetext[i], translation, stats[[i]], phylo[[i]])
-        })
+        }, n.cores=n.cores)
         class(obj) <- "beastList"
     }
     return(obj)
