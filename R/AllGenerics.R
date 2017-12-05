@@ -1,6 +1,6 @@
 ##' @title as.treedata
 ##' @param tree tree object
-##' @param ... additional parameter
+##' @param ... additional parameters
 ##' @return treedata object
 ##' @rdname as.treedata
 ##' @export
@@ -8,16 +8,38 @@ as.treedata <- function(tree, ...) {
     UseMethod("as.treedata")
 }
 
+##' access placement information
+##'
+##'
+##' @title get.placements
+##' @param tree tree object
+##' @param ... additional parameters
+##' @return placement tibble
+##' @rdname get-placements
+##' @export
+get.placements <- function(tree, ...) {
+    UseMethod("get.placements")
+}
+
+##' get.tree method
+##'
+##'
 ##' @docType methods
 ##' @name get.tree
 ##' @rdname get.tree-methods
 ##' @title get.tree method
-##' @param object one of \code{phylo}, \code{jplace}, \code{nhx}, \code{phangorn}, \code{beast}, \code{hyphy}, \code{codeml}, \code{codeml_mlc}, \code{paml_rst} object
+##' @param object one of \code{phylo}, \code{jplace}, \code{nhx}, \code{phangorn}, \code{hyphy}, \code{codeml}, \code{codeml_mlc}, \code{paml_rst} object
 ##' @param ... additional parameter
 ##' @return phylo object
+##' @importFrom methods setGeneric
 ##' @export
+##' @author Guangchuang Yu \url{http://guangchuangyu.github.io}
+##' @usage get.tree(object, ...)
 setGeneric("get.tree", function(object, ...) standardGeneric("get.tree"))
 
+##' access tree text (newick text) from tree object
+##'
+##'
 ##' @docType methods
 ##' @name get.treetext
 ##' @rdname get.treetext-methods
@@ -59,17 +81,6 @@ setGeneric("get.fields", function(object, ...) standardGeneric("get.fields"))
 
 
 ##' @docType methods
-##' @name get.placements
-##' @rdname get.placements-methods
-##' @title get.placements method
-##' @param object jplace object
-##' @param by get best hit or others
-##' @param ... additional parameter
-##' @return data.frame
-##' @export
-setGeneric("get.placements", function(object, by, ...) standardGeneric("get.placements"))
-
-##' @docType methods
 ##' @name get.subs
 ##' @rdname get.subs-methods
 ##' @title get.subs method
@@ -103,8 +114,9 @@ setGeneric("get.tipseq", function(object, ...) standardGeneric("get.tipseq"))
 ##' @export
 setGeneric (
 	name = "drop.tip",
-	def = function( object, tip, ... )
-		{ standardGeneric("drop.tip") }
+	def = function( object, tip, ... ) {
+      standardGeneric("drop.tip")
+  }
 )
 
 

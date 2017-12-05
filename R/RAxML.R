@@ -4,6 +4,7 @@
 ##' @title read.raxml
 ##' @param file RAxML bootstrapping analysis output
 ##' @return raxml object
+##' @importFrom tibble data_frame
 ##' @export
 ##' @examples
 ##' raxml_file <- system.file("extdata/RAxML", "RAxML_bipartitionsBranchLabels.H3", package="treeio")
@@ -22,16 +23,8 @@ read.raxml <- function(file) {
         phylo$node.label <- NULL
     }
 
-    bootstrap <- data.frame(node = Ntip(phylo) + 1:phylo$Nnode,
+    bootstrap <- data_frame(node = Ntip(phylo) + 1:phylo$Nnode,
                             bootstrap = bootstrap)
-
-    ## new("raxml",
-    ##     file      = file,
-    ##     fields    = "bootstrap",
-    ##     treetext  = tree.text,
-    ##     phylo     = phylo,
-    ##     bootstrap = bootstrap
-    ##     )
 
     new("treedata",
         file = filename(file),
@@ -40,35 +33,3 @@ read.raxml <- function(file) {
         data = bootstrap
         )
 }
-
-
-## ##' @rdname groupOTU-methods
-## ##' @exportMethod groupOTU
-## setMethod("groupOTU", signature(object="raxml"),
-##           function(object, focus, group_name="group") {
-##               groupOTU_(object, focus, group_name)
-##           }
-##           )
-
-## ##' @rdname groupClade-methods
-## ##' @exportMethod groupClade
-## setMethod("groupClade", signature(object="raxml"),
-##           function(object, node, group_name="group") {
-##               groupClade_(object, node, group_name)
-##           })
-
-## ##' @rdname scale_color-methods
-## ##' @exportMethod scale_color
-## setMethod("scale_color", signature(object="raxml"),
-##           function(object, by="bootstrap", ...) {
-##               scale_color_(object, by, ...)
-##           })
-
-
-## ##' @rdname gzoom-methods
-## ##' @exportMethod gzoom
-## setMethod("gzoom", signature(object="raxml"),
-##           function(object, focus, subtree=FALSE, widths=c(.3, .7)) {
-##               gzoom.phylo(get.tree(object), focus, subtree, widths)
-##           })
-

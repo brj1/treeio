@@ -12,7 +12,7 @@ as.treedata(tree, ...)
 \arguments{
 \item{tree}{tree object}
 
-\item{...}{additional parameter}
+\item{...}{additional parameters}
 
 \item{boot}{optional, can be bootstrap value from ape::boot.phylo}
 }
@@ -25,4 +25,3 @@ converting phylo object to treedata object
 \author{
 guangchuang yu
 }
-
