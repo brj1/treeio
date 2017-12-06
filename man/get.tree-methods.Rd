@@ -5,14 +5,7 @@
 \alias{get.tree}
 \alias{get.tree,treedata-method}
 \alias{get.tree,codeml-method}
-\alias{get.tree,jplace-method}
-\alias{get.tree,phylip-method}
 \alias{get.tree,phylo-method}
-\alias{get.tree,hyphy-method}
-\alias{get.tree,paml_rst-method}
-\alias{get.tree,phangorn-method}
-\alias{get.tree,codeml_mlc-method}
-\alias{get.tree,r8s-method}
 \title{get.tree method}
 \usage{
 get.tree(object, ...)
@@ -21,21 +14,7 @@ get.tree(object, ...)
 
 \S4method{get.tree}{codeml}(object, by = "rst", ...)
 
-\S4method{get.tree}{jplace}(object)
-
-\S4method{get.tree}{phylip}(object, ...)
-
 \S4method{get.tree}{phylo}(object, ...)
-
-\S4method{get.tree}{hyphy}(object)
-
-\S4method{get.tree}{paml_rst}(object)
-
-\S4method{get.tree}{phangorn}(object, ...)
-
-\S4method{get.tree}{codeml_mlc}(object, ...)
-
-\S4method{get.tree}{r8s}(object, ...)
 }
 \arguments{
 \item{object}{one of \code{phylo}, \code{jplace}, \code{nhx}, \code{phangorn}, \code{hyphy}, \code{codeml}, \code{codeml_mlc}, \code{paml_rst} object}
@@ -49,12 +28,6 @@ phylo object
 }
 \description{
 get.tree method
-}
-\examples{
-nwk <- system.file("extdata/HYPHY", "labelledtree.tree", package="treeio")
-ancseq <- system.file("extdata/HYPHY", "ancseq.nex", package="treeio")
-hy <- read.hyphy(nwk, ancseq)
-get.tree(hy)
 }
 \author{
 Guangchuang Yu \url{http://guangchuangyu.github.io}

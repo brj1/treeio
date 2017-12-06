@@ -3,6 +3,7 @@
 \docType{class}
 \name{treedata-class}
 \alias{treedata-class}
+\alias{show,treedata-method}
 \title{Class "treedata"
 This class stores phylogenetic tree with associated data}
 \description{
@@ -12,19 +13,27 @@ This class stores phylogenetic tree with associated data
 \section{Slots}{
 
 \describe{
-\item{\code{phylo}}{phylo object for tree structure}
+\item{\code{file}}{tree file}
 
 \item{\code{treetext}}{newick tree string}
+
+\item{\code{phylo}}{phylo object for tree structure}
+
+\item{\code{translation}}{tip number to name translation in nexus file}
 
 \item{\code{data}}{associated data}
 
 \item{\code{extraInfo}}{extra information, reserve for merge_tree}
 
-\item{\code{file}}{tree file}
+\item{\code{tip_seq}}{tip sequences}
 
-\item{\code{translation}}{tip number to name translation in nexus file}
+\item{\code{anc_seq}}{ancestral sequences}
 
-\item{\code{placements}}{reserve for jplace file to store placement information}
+\item{\code{seq_type}}{sequence type, one of NT or AA}
+
+\item{\code{tipseq_file}}{tip sequence file}
+
+\item{\code{ancseq_file}}{ancestral sequence file}
 
 \item{\code{info}}{extra information, e.g. metadata, software version etc.}
 }}

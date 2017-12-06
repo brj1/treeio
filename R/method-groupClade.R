@@ -14,13 +14,13 @@ setMethod("groupClade", signature(object="codeml"),
           )
 
 
-##' @rdname groupClade-methods
-##' @exportMethod groupClade
-setMethod("groupClade", signature(object="jplace"),
-          function(object, node, group_name="group") {
-              groupClade_(object, node, group_name)
-          }
-          )
+## ##' @rdname groupClade-methods
+## ##' @exportMethod groupClade
+## setMethod("groupClade", signature(object="jplace"),
+##           function(object, node, group_name="group") {
+##               groupClade_(object, node, group_name)
+##           }
+##           )
 
 ##' group selected clade
 ##'
@@ -32,12 +32,12 @@ setMethod("groupClade", signature(object="treedata"),
               groupClade_(object, node, group_name)
           })
 
-##' @rdname groupClade-methods
-##' @exportMethod groupClade
-setMethod("groupClade", signature(object="phylip"),
-          function(object, node, group_name="group") {
-              groupClade_(object, node, group_name)
-          })
+## ##' @rdname groupClade-methods
+## ##' @exportMethod groupClade
+## setMethod("groupClade", signature(object="phylip"),
+##           function(object, node, group_name="group") {
+##               groupClade_(object, node, group_name)
+##           })
 
 
 ##' @rdname groupClade-methods
@@ -47,13 +47,6 @@ setMethod("groupClade", signature(object="phylo"),
               groupClade.phylo(object, node, group_name)
           })
 
-
-##' @rdname groupClade-methods
-##' @exportMethod groupClade
-setMethod("groupClade", signature(object="phangorn"),
-          function(object, node, group_name="group") {
-              groupClade_(object, node, group_name)
-          })
 
 
 ##' @importFrom ape extract.clade
