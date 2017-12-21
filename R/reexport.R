@@ -1,22 +1,21 @@
-##' @importFrom ape read.tree
-##' @export
-ape::read.tree
-
-##' @importFrom ape read.nexus
-##' @export
-ape::read.nexus
-
-
-##' @importFrom ape rtree
-##' @export
-ape::rtree
-
-##' @importFrom ape write.tree
-##' @export
-ape::write.tree
-
-
 ##' @importFrom magrittr %>%
 ##' @export
 magrittr::`%>%`
 
+##' @importFrom tidytree get.fields
+##' @export
+tidytree::get.fields
+
+##' @importFrom tidytree as.treedata
+##' @export
+tidytree::as.treedata
+
+
+##' @importFrom dplyr full_join
+##' @export
+dplyr::full_join
+
+
+##' @importFrom tibble data_frame
+##' @export
+tibble::data_frame

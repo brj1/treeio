@@ -1,74 +1,3 @@
-##' site mask
-##'
-##'
-##' @title mask
-##' @param tree_object tree object
-##' @param field selected field
-##' @param site site
-##' @param mask_site if TRUE, site will be masked.
-##'                  if FALSE, selected site will not be masked, while other sites will be masked.
-##' @return updated tree object
-##' @export
-##' @author Guangchuang Yu
-mask <- function(tree_object, field, site, mask_site=FALSE) {
-    has_field <- has.field(tree_object, field)
-    if (has_field == FALSE) {
-        stop("'field' is not available in 'tree_object'...")
-    }
-
-    has_slot <- attr(has_field, "has_slot")
-    is_codeml <- attr(has_field, "is_codeml")
-
-    if (has_slot) {
-        if (is_codeml) {
-            field_info <- slot(tree_object@rst, field)
-        } else {
-            field_info <- slot(tree_object, field)
-        }
-        field_data <- field_info[,2]
-    } else {
-        field_data <- tree_object@extraInfo[, field]
-    }
-
-    field_data <- sapply(field_data, gsub, pattern="\n", replacement="/")
-
-    x <- field_data[field_data != ""]
-    x <- x[!is.na(x)]
-    pos <- strsplit(x, " / ") %>% unlist %>%
-        gsub("^[a-zA-Z]+", "", . ) %>%
-        gsub("[a-zA-Z]\\s*$", "", .) %>%
-        as.numeric
-
-    if (mask_site == FALSE) {
-        pos2 <- 1:max(pos)
-        pos2 <- pos2[-site]
-        site <- pos2
-    }
-
-    site <- site[site %in% pos]
-
-    for (i in seq_along(field_data)) {
-        if (is.na(field_data[i]))
-            next
-        for (j in seq_along(site)) {
-            pattern <- paste0("/*\\s*[a-zA-Z]", site[j], "[a-zA-Z]\\s*")
-            field_data[i] <- gsub(pattern, "",  field_data[i])
-        }
-        field_data[i] <- gsub("^/\\s", "", field_data[i])
-    }
-
-    if (has_slot) {
-        field_info[,2] <- field_data
-        if (is_codeml) {
-            slot(tree_object@rst, field) <- field_info
-        } else {
-            slot(tree_object, field) <- field_info
-        }
-    } else {
-        tree_object@extraInfo[, field] <- field_data
-    }
-    tree_object
-}
 
 
 read.tip_seq_mlc <- function(mlcfile) {
@@ -167,7 +96,7 @@ read.phylo_paml_mlc <- function(mlcfile) {
     ## jj <- match(1:ntip, tr3$edge[,2])
     treeinfo[ii, "length"] <- tr2$edge.length[ii] ##tr3$edge.length[jj]
 
-    root <- getRoot(tr3) ## always == (Ntip(tr3) + 1)
+    root <- rootnode(tr3) ## always == (Ntip(tr3) + 1)
     currentNode <- treeinfo$label[ii]
     ## treeinfo.tr3 <- fortify(tr3)
     tr3_label <- c(tr3$tip.label, tr3$node.label)
@@ -233,7 +162,7 @@ read.phylo_paml_rst <- function(rstfile) {
     edge <- get_tree_edge_paml(rst)
 
     label=c(tr3$tip.label, tr3$node.label)
-    root <- getRoot(tr3)
+    root <- rootnode(tr3)
     label %<>% `[`(. != root)
 
     node.length <- data.frame(label=label,
@@ -327,105 +256,6 @@ get_tree_edge_paml <- function(paml) {
     return(edge)
 }
 
-## set.paml_rst_ <- function(object) {
-##     if (!is(object, "paml_rst")) {
-##         stop("object should be an instance of 'paml_rst'")
-##     }
-##     if (length(object@tip_seq) == 0) {
-##         return(object)
-##     }
-
-##     types <- get.fields(object)
-##     for (type in types) {
-##         value <- subs_paml_rst(object, type)
-##         if (all(is.na(value)))
-##             next
-
-##         if (type == "marginal_subs") {
-##             object@marginal_subs <- value
-##         } else if (type == "marginal_AA_subs") {
-##             object@marginal_AA_subs <- value
-##         } else if (type == "joint_subs") {
-##             object@joint_subs <- value
-##         } else if (type == "joint_AA_subs") {
-##             object@joint_AA_subs <- value
-##         }
-##     }
-##     return(object)
-## }
 
 
-## get.subs_paml_rst <- function(object, type) {
-##     if (!is(object, "paml_rst")) {
-##         stop("object should be an instance of 'paml_rst'")
-##     }
-##     if (type == "marginal_subs") {
-##         res <- object@marginal_subs
-##     } else if (type == "marginal_AA_subs") {
-##         res <- object@marginal_AA_subs
-##     } else if (type == "joint_subs") {
-##         res <- object@joint_subs
-##     } else if (type == "joint_AA_subs") {
-##         res <- object@joint_AA_subs
-##     } else {
-##         stop("type should be one of 'marginal_subs',
-##                              'marginal_AA_subs', 'joint_subs' or 'joint_AA_subs'. ")
-##     }
-##     return(res)
-## }
-
-## subs_paml_rst <- function(x, type, ...) {
-##     if (class(x) != "paml_rst") {
-##         stop("x should be an object of paml_rst...")
-##     }
-##     seqs <- x@tip_seq
-##     if (length(seqs) == 0) {
-##         stop("tip sequences is not available...")
-##     }
-##     if (type %in% c("marginal_subs", "marginal_AA_subs")) {
-##         ancseq <- x@marginal_ancseq
-##         ## seqs <- c(seqs, x@marginal_ancseq)
-##     } else if (type %in% c("joint_subs", "joint_AA_subs")){
-##         ancseq <- x@joint_ancseq
-##         ## seqs <- c(seqs, x@joint_ancseq)
-##     } else {
-##         stop("type should be one of 'marginal_subs',
-##                              'marginal_AA_subs', 'joint_subs' or 'joint_AA_subs'. ")
-##     }
-##     if( type %in% c("marginal_subs", "joint_subs")) {
-##         translate <- FALSE
-##     } else {
-##         translate <- TRUE
-##     }
-
-##     if (all(ancseq == "")) {
-##         return(NA)
-##     }
-##     seqs <- c(seqs, ancseq)
-##     get.subs_(x@phylo, seqs, translate=translate, ...)
-## }
-
-
-##' label branch for PAML to infer selection pressure using branch model
-##'
-##'
-##' @title label_branch_paml
-##' @param tree phylo object
-##' @param node node number
-##' @param label label of branch, e.g. #1
-##' @return updated phylo object
-##' @export
-##' @author guangchuang yu
-label_branch_paml <- function(tree, node, label) {
-    sp_id <- get.offspring(tree, node)
-    tip_id <- sp_id[sp_id <= Ntip(tree)]
-    node_id <- c(node, sp_id[sp_id > Ntip(tree)])
-    tree$tip.label[tip_id] <- paste(tree$tip.label[tip_id], label)
-    if (is.null(tree$node.label)) {
-        tree$node.label <- rep("", Nnode(tree))
-    }
-    node_index <- node_id - Ntip(tree)
-    tree$node.label[node_index] <- paste(tree$node.label[node_index], label)
-    return(tree)
-}
 

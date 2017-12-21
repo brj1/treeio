@@ -1,29 +1,31 @@
 Package: treeio
 Title: Base Classes and Functions for Phylogenetic Tree Input and Output
-Version: 1.3.2
+Version: 1.3.10
 Authors@R: c(
     person("Guangchuang", "Yu",     email = "guangchuangyu@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")),
     person("Tommy Tsan-Yuk", "Lam", email = "tylam.tommy@gmail.com",   role = c("aut", "ths")),
     person("Casey", "Dunn",         email = "casey_dunn@brown.edu",    role = "ctb"),
     person("Bradley", "Jones",      email = "brj1@sfu.ca",             role = "ctb")
 	  )
-Description: Base classes and functions for parsing and exporting phylogenetic trees.
+Description: Base classes and functions for parsing and exporting phylogenetic trees. 'treeio' supports parsing analysis findings from commonly used software packages, allows linking exteranl data to phylogeny and merging tree data obtained from different sources. It also supports exporting phylogenetic tree with heterogeneous associated data to a single tree file.
 Depends:
-    R (>= 3.4.0)
+    R (>= 3.4.3)
 Imports:
     ape,
     dplyr,
-    ggplot2,
     jsonlite,
     magrittr,
     methods,
     rvcheck,
-    tibble
+    tibble,
+    tidytree (>= 0.1.6)
 Suggests:
+    ggplot2,
     ggtree,
     knitr,
     prettydoc,
-    testthat
+    testthat,
+    tidyr
 VignetteBuilder: knitr
 ByteCompile: true
 License: Artistic-2.0
@@ -31,6 +33,6 @@ URL: https://guangchuangyu.github.io/treeio
 BugReports: https://github.com/GuangchuangYu/treeio/issues
 Encoding: UTF-8
 LazyData: true
-biocViews: Alignment, Annotation, Clustering, DataImport,
-    MultipleSequenceAlignment, Software
+biocViews: Software, Annotation, Clustering, DataImport, DataRepresentation,
+    Alignment, MultipleSequenceAlignment
 RoxygenNote: 6.0.1

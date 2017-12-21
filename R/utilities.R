@@ -1,6 +1,5 @@
 is_numeric <- function(x) !anyNA(suppressWarnings(as.numeric(as.character(x))))
 
-
 filename <- function(file) {
     ## textConnection(text_string) will work just like a file
     ## in this case, just set the filename as ""
@@ -11,124 +10,16 @@ filename <- function(file) {
     return(file_name)
 }
 
-has.field <- function(tree_object, field) {
-    if ( ! field %in% get.fields(tree_object) ) {
-        return(FALSE)
-    }
-
-    if (is(tree_object, "codeml")) {
-        is_codeml <- TRUE
-        tree <- tree_object@rst
-    } else {
-        is_codeml <- FALSE
-        tree <- tree_object
-    }
-
-    if (.hasSlot(tree, field)) {
-        has_slot <- TRUE
-    } else {
-        has_slot <- FALSE
-    }
-
-    if (has_slot == FALSE) {
-        if (has.extraInfo(tree_object) == FALSE) {
-            return(FALSE)
-        }
-
-        if (nrow(tree_object@extraInfo) == 0) {
-            return(FALSE)
-        }
-
-        if (!field %in% colnames(tree_object@extraInfo)) {
-            return(FALSE)
-        }
-    }
-    res <- TRUE
-    attr(res, "has_slot") <- has_slot
-    attr(res, "is_codeml") <- is_codeml
-    return(res)
-}
-
-append_extraInfo <- function(df, object) {
-    if (has.extraInfo(object)) {
-        info <- object@extraInfo
-        if ("parent" %in% colnames(info)) {
-            res <- merge(df, info, by.x=c("node", "parent"), by.y=c("node", "parent"))
-        } else {
-            res <- merge(df, info, by.x="node", by.y="node")
-        }
-    } else {
-        return(df)
-    }
-
-    i <- order(res$node, decreasing = FALSE)
-    res <- res[i,]
-    return(res)
-}
-
-get.fields.tree <- function(object) {
-    if (is(object, "codeml")) {
-        fields <- c(get.fields(object@rst),
-                    get.fields(object@mlc))
-        fields <- unique(fields)
-    } else if (is(object, "treedata")) {
-        if (nrow(object@data) > 0) {
-            fields <- colnames(object@data)
-            fields <- fields[fields != "node"]
-        } else {
-            fields <- ""
-        }
-    } else {
-        fields <- object@fields
-    }
-
-    if (has.slot(object, "extraInfo")) {
-        extraInfo <- object@extraInfo
-        if (nrow(extraInfo) > 0) {
-            cn <- colnames(extraInfo)
-            i <- match(c("x", "y", "isTip", "node", "parent", "label", "branch", "branch.length"), cn)
-            i <- i[!is.na(i)]
-            fields %<>% c(cn[-i])
-        }
-    }
-    return(fields)
-}
-
-
-seq2codon <- function(x) {
-    substring(x, first=seq(1, nchar(x)-2, 3), last=seq(3, nchar(x), 3))
-}
-
-## @importFrom Biostrings GENETIC_CODE
-##' @importFrom rvcheck get_fun_from_pkg
-codon2AA <- function(codon) {
-    ## a genetic code name vector
-    GENETIC_CODE <- get_fun_from_pkg("Biostrings", "GENETIC_CODE")
-    aa <- GENETIC_CODE[codon]
-    aa[is.na(aa)] <- "X"
-    return(aa)
-}
-
-
-getPhyInfo <- function(phy) {
-    line1 <- readLines(phy, n=1)
-    res <- strsplit(line1, split="\\s")[[1]]
-    res <- res[res != ""]
-
-    return(list(num=as.numeric(res[1]), width=as.numeric(res[2])))
-}
-
-
 jplace_treetext_to_phylo <- function(tree.text) {
-    ## move edge label to node label separate by @
-    tr <- gsub('(:[0-9\\.eE\\+\\-]+)\\{(\\d+)\\}', '\\@\\2\\1', tree.text)
+    ## move edge label to node label separate by @@
+    tr <- gsub('(:[0-9\\.eE\\+\\-]+)\\{(\\d+)\\}', '\\@@\\2\\1', tree.text)
     phylo <- read.tree(text=tr)
-    if (length(grep('@', phylo$tip.label)) > 0) {
-        phylo$node.label[1] %<>% gsub("(.*)\\{(\\d+)\\}", "\\1@\\2", .)
-        tip.edgeNum <- as.numeric(gsub("[^@]*@(\\d*)", "\\1",phylo$tip.label))
-        node.edgeNum <- as.numeric(gsub("[^@]*@(\\d*)", "\\1",phylo$node.label))
-        phylo$tip.label %<>% gsub("@\\d+", "", .)
-        phylo$node.label %<>% gsub("@\\d+", "", .)
+    if (length(grep('@@', phylo$tip.label)) > 0) {
+        phylo$node.label[1] %<>% gsub("(.*)\\{(\\d+)\\}", "\\1@@\\2", .)
+        tip.edgeNum <- as.numeric(gsub(".*@@(\\d*)", "\\1",phylo$tip.label))
+        node.edgeNum <- as.numeric(gsub(".*@@(\\d*)", "\\1",phylo$node.label))
+        phylo$tip.label %<>% gsub("@@\\d+", "", .)
+        phylo$node.label %<>% gsub("@@\\d+", "", .)
         if (all(phylo$node.label == "")) {
             phylo$node.label <- NULL
         }
@@ -158,22 +49,6 @@ jplace_treetext_to_phylo <- function(tree.text) {
     return(phylo)
 }
 
-## extract.treeinfo.jplace <- function(object, layout="phylogram", ladderize=TRUE, right=FALSE, ...) {
-
-##     tree <- get.tree(object)
-
-##     df <- fortify.phylo(tree, layout=layout, ladderize=ladderize, right=right, ...)
-
-##     edgeNum.df <- attr(tree, "edgeNum")
-##     if (!is.null(edgeNum.df)) {
-##         df2 <- merge(df, edgeNum.df, by.x="node", by.y="node", all.x=TRUE)
-##         df <- df2[match(df[, "node"], df2[, "node"]),]
-##     }
-
-##     attr(df, "ladderize") <- ladderize
-##     attr(df, "right") <- right
-##     return(df)
-## }
 
 ## convert edge number to node number for EPA/pplacer output
 edgeNum2nodeNum <- function(jp, edgeNum) {
@@ -187,67 +62,14 @@ edgeNum2nodeNum <- function(jp, edgeNum) {
     edges[idx, "node"]
 }
 
-is.character_beast <- function(stats3, cn) {
-    for (i in 1:nrow(stats3)) {
-        if ( is.na(stats3[i,cn]) ) {
-            next
-        } else {
-            ## res <- grepl("[a-df-zA-DF-Z]+", unlist(stats3[i, cn]))
-            ## return(all(res == TRUE))
-            res <- grepl("^[0-9\\.eE-]+$", unlist(stats3[i, cn]))
-            return(all(res == FALSE))
-        }
-    }
-    return(FALSE)
-}
-
-
 is.tree <- function(x) {
     if (class(x) %in% c("phylo",
                         "phylo4",
                         "jplace",
-                        "baseml",
-                        "paml_rst",
-                        "baseml_mlc",
-                        "codeml_mlc",
-                        "codeml",
-                        "hyphy",
                         "treedata")
         ) {
         return(TRUE)
     }
-    return(FALSE)
-}
-
-is.tree_attribute <- function(df, var) {
-    if(length(var) == 1 &&
-       !is.null(var)    &&
-       var %in% colnames(df)) {
-        return(TRUE)
-    }
-    return(FALSE)
-}
-
-is.tree_attribute_ <- function(p, var) {
-    is.tree_attribute(p$data, var)
-}
-
-
-has.extraInfo <- function(object) {
-    if (!is.tree(object)) {
-        return(FALSE)
-    }
-
-    if (! .hasSlot(object, "extraInfo")) {
-        return(FALSE)
-    }
-
-    extraInfo <- object@extraInfo
-
-    if (nrow(extraInfo) > 0) {
-        return(TRUE)
-    }
-
     return(FALSE)
 }
 
@@ -257,22 +79,5 @@ has.slot <- function(object, slotName) {
         return(FALSE)
     }
     .hasSlot(object, slotName)
-    ## slot <- tryCatch(slot(object, slotName), error=function(e) NULL)
-    ## ! is.null(slot)
 }
 
-
-get.offspring <- function(tree, node) {
-    sp <- getChild(tree, node)
-    sp <- sp[sp != 0]
-    if (length(sp) == 0) {
-        stop("input node is a tip...")
-    }
-    i <- 1
-    while (i <= length(sp)) {
-        sp <- c(sp, getChild(tree, sp[i]))
-        sp <- sp[sp != 0]
-        i <- i + 1
-    }
-    return(sp)
-}

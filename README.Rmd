@@ -8,7 +8,7 @@ html_preview: false
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 
-#  treeio: Base classes and functions for parsing and exporting phylogenetic tree
+#  treeio: Base classes and functions for phylogenetic tree input and output
 
 ```{r echo=FALSE, results="hide", message=FALSE}
 #library("txtplot")
@@ -41,38 +41,18 @@ library("yyplot")
 [![AppVeyor Build Status](https://img.shields.io/appveyor/ci/Guangchuangyu/treeio/master.svg?label=Windows)](https://ci.appveyor.com/project/GuangchuangYu/treeio)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/GuangchuangYu/treeio.svg?style=social)](https://twitter.com/intent/tweet?hashtags=treeio&url=http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12628/abstract&screen_name=guangchuangyu)
 
+
+```{r comment="", echo=FALSE, results='asis'}
+cat(packageDescription('treeio')$Description)
+```
+
+
 -----------------------------------------------------
-
-`treeio` was splited from `ggtree` package, please cite the following article when using `treeio`:
-
-__G Yu__, DK Smith, H Zhu, Y Guan, TTY Lam^\*^. ggtree: an R package for visualization and annotation of phylogenetic trees with their covariates and other associated data. __*Methods in Ecology and Evolution*__. 2017, 8(1):28-36.
-
-`r badge_doi("10.1111/2041-210X.12628", "green")`
-`r badge_altmetric("10533079", "green")`
-`r badge_citation("HtEfBTGE9r8C", "7268358477862164627", "green")`
-
-
-----------------------------------------------------------------------------------------
 
 For details, please visit our project website, <https://guangchuangyu.github.io/treeio>.
 
 + [Documentation](https://guangchuangyu.github.io/treeio/documentation/)
-+ [FAQ](https://guangchuangyu.github.io/treeio/faq/)
-+ [Featured Articles](https://guangchuangyu.github.io/treeio/featuredArticles/)
 + [Feedback](https://guangchuangyu.github.io/treeio/#feedback)
-
-### Citation
-
-`r badge_citation("HtEfBTGE9r8C", "7268358477862164627", "green")`
-
-
-```{r echo=F, comment=NA}
-p <- plot_citation_trend('DO5oG40AAAAJ', 'HtEfBTGE9r8C')
-ggsave(p, file="docs/images/citation.png", width=8, height=4)
-```
-
-<img src="docs/images/citation.png" width="890"/>
-
 
 ### Download stats
 

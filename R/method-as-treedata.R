@@ -2,9 +2,13 @@
 ##'
 ##'
 ##' converting phylo object to treedata object
+##' @title as.treedata
 ##' @rdname as.treedata
+##' @param tree input tree, a \code{phylo} object
 ##' @param boot optional, can be bootstrap value from ape::boot.phylo
+##' @param ... additional parameters
 ##' @importFrom methods new
+##' @importFrom tidytree as.treedata
 ##' @method as.treedata phylo
 ##' @export
 ##' @author guangchuang yu
@@ -36,14 +40,9 @@ as.treedata.phylo4d <- function(tree, ...) {
         )
 }
 
+
 ##' @method as.treedata ggtree
 ##' @export
 as.treedata.ggtree <- function(tree, ...) {
-    cn <- colnames(tree$data)
-    idx <- cn[!cn %in% c("parent", "branch.length", "label", "isTip", "x", "y", "branch", "angle")]
-    res <- new("treedata",
-               phylo = as.phylo(tree))
-    if (length(idx))
-        res@data <- as_data_frame(tree$data[, idx])
-    return(res)
+    as.treedata(tree$data, ...)
 }

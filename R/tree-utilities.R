@@ -25,39 +25,27 @@ taxa_rename <- function(tree, name) {
 }
 
 
-##' number of tips
+##' label branch for PAML to infer selection pressure using branch model
 ##'
 ##'
-##' @title Ntip
-##' @param tree tree object
-##' @return number of tips
+##' @title label_branch_paml
+##' @param tree phylo object
+##' @param node node number
+##' @param label label of branch, e.g. #1
+##' @return updated phylo object
 ##' @export
 ##' @author guangchuang yu
-##' @examples
-##' Ntip(rtree(30))
-##' @author guangchuang yu
-Ntip <- function(tree) {
-    phylo <- as.phylo(tree)
-    length(phylo$tip.label)
-}
-
-##' number of nodes
-##'
-##'
-##' @title Nnode
-##' @param tree tree object
-##' @param internal.only whether only count internal nodes
-##' @return number of nodes
-##' @export
-##' @examples
-##' Nnode(rtree(30))
-##' @author guangchuang yu
-Nnode <- function(tree, internal.only=TRUE) {
-    phylo <- as.phylo(tree)
-    if (internal.only)
-        return(phylo$Nnode)
-
-    Ntip(phylo) + phylo$Nnode
+label_branch_paml <- function(tree, node, label) {
+    sp_id <- offspring(tree, node)
+    tip_id <- sp_id[sp_id <= Ntip(tree)]
+    node_id <- c(node, sp_id[sp_id > Ntip(tree)])
+    tree$tip.label[tip_id] <- paste(tree$tip.label[tip_id], label)
+    if (is.null(tree$node.label)) {
+        tree$node.label <- rep("", Nnode(tree))
+    }
+    node_index <- node_id - Ntip(tree)
+    tree$node.label[node_index] <- paste(tree$node.label[node_index], label)
+    return(tree)
 }
 
 
@@ -93,85 +81,6 @@ getNodeNum <- function(tree) {
 ##' Nnode2(rtree(30))
 Nnode2 <- getNodeNum
 
-getParent <- function(tr, node) {
-    if ( node == getRoot(tr) )
-        return(0)
-    edge <- tr[["edge"]]
-    parent <- edge[,1]
-    child <- edge[,2]
-    res <- parent[child == node]
-    if (length(res) == 0) {
-        stop("cannot found parent node...")
-    }
-    if (length(res) > 1) {
-        stop("multiple parent found...")
-    }
-    return(res)
-}
-
-getChild <- function(tr, node) {
-    edge <- tr[["edge"]]
-    res <- edge[edge[,1] == node, 2]
-    ## if (length(res) == 0) {
-    ##     ## is a tip
-    ##     return(NA)
-    ## }
-    return(res)
-}
-
-getSibling <- function(tr, node) {
-    root <- getRoot(tr)
-    if (node == root) {
-        return(NA)
-    }
-
-    parent <- getParent(tr, node)
-    child <- getChild(tr, parent)
-    sib <- child[child != node]
-    return(sib)
-}
-
-
-getAncestor <- function(tr, node) {
-    root <- getRoot(tr)
-    if (node == root) {
-        return(NA)
-    }
-    parent <- getParent(tr, node)
-    res <- parent
-    while(parent != root) {
-        parent <- getParent(tr, parent)
-        res <- c(res, parent)
-    }
-    return(res)
-}
-
-##' get the root number
-##'
-##'
-##' @title getRoot
-##' @param tr phylo object
-##' @return root number
-##' @export
-##' @examples
-##' getRoot(rtree(10))
-##' @author Guangchuang Yu
-getRoot <- function(tr) {
-    edge <- tr[["edge"]]
-    ## 1st col is parent,
-    ## 2nd col is child,
-    if (!is.null(attr(tr, "order")) && attr(tr, "order") == "postorder")
-        return(edge[nrow(edge), 1])
-
-    parent <- unique(edge[,1])
-    child <- unique(edge[,2])
-    ## the node that has no parent should be the root
-    root <- parent[ ! parent %in% child ]
-    if (length(root) > 1) {
-        stop("multiple roots founded...")
-    }
-    return(root)
-}
 
 ##' test whether input object is produced by ggtree function
 ##'
@@ -180,10 +89,6 @@ getRoot <- function(tr) {
 ##' @param x object
 ##' @return TRUE or FALSE
 ##' @export
-##' @examples
-##' library(ggtree)
-##' p <- ggtree(rtree(30))
-##' is.ggtree(p)
 ##' @author guangchuang yu
 is.ggtree <- function(x) inherits(x, 'ggtree')
 

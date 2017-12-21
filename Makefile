@@ -2,7 +2,7 @@ PKGNAME := $(shell sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION)
 PKGVERS := $(shell sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION)
 PKGSRC  := $(shell basename `pwd`)
 
-all: rd check clean
+all: rd readme check clean
 
 alldocs: rd readme site
 
@@ -28,7 +28,7 @@ install:
 	cd ..;\
 	R CMD INSTALL $(PKGNAME)_$(PKGVERS).tar.gz
 
-check: build
+check: rd build
 	cd ..;\
 	Rscript -e 'rcmdcheck::rcmdcheck("$(PKGNAME)_$(PKGVERS).tar.gz")'
 
@@ -36,7 +36,7 @@ check2: rd build
 	cd ..;\
 	R CMD check $(PKGNAME)_$(PKGVERS).tar.gz
 
-check3: build2
+check3: rd build2
 	cd ..;\
 	R CMD check --ignore-vignettes $(PKGNAME)_$(PKGVERS).tar.gz
 
