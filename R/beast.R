@@ -17,7 +17,7 @@ read.beast <- function(file, mc.cores=1) {
     stats <- read.stats_beast(file)
     phylo <- read.nexus(file)
     
-    my.lapply <- if (ncores > 1) function(X, FOO, ..., mc.cores) lapply(X, FOO, ...) else mclapply
+    my.lapply <- if (mc.cores == 1 || !require(parallel)) function(X, FOO, ..., mc.cores) lapply(X, FOO, ...) else mclapply
 
     if (length(treetext) == 1) {
         obj <- BEAST(file, treetext, stats, phylo)
