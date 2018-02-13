@@ -13,12 +13,12 @@
 ##' file <- system.file("extdata/BEAST", "beast_mcc.tree", package="treeio")
 ##' read.beast(file)
 read.beast <- function(file, mc.cores=1) {
+    my.lapply <- if (mc.cores == 1 || !require(parallel)) lapply else function(X, FOO, ...) mclapply(X, FOO, ..., mc.cores=mc.cores)
+
     treetext <- read.treetext_beast(file)
-    stats <- read.stats_beast(file)
+    stats <- read.stats_beast(file, my.lapply)
     phylo <- read.nexus(file)
     
-    my.lapply <- if (mc.cores == 1 || !require(parallel)) function(X, FOO, ..., mc.cores) lapply(X, FOO, ...) else mclapply
-
     if (length(treetext) == 1) {
         obj <- BEAST(file, treetext, stats, phylo)
     } else {
@@ -103,13 +103,13 @@ read.trans_beast <- function(file) {
 }
 
 
-read.stats_beast <- function(file) {
+read.stats_beast <- function(file, my.lapply) {
     beast <- readLines(file)
     trees <- read.treetext_beast(file)
     if (length(trees) == 1) {
         return(read.stats_beast_internal(beast, trees))
     }
-    lapply(trees, read.stats_beast_internal, beast=beast)
+    my.lapply(trees, read.stats_beast_internal, beast=beast)
 }
 
 
