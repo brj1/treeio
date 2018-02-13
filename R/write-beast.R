@@ -16,7 +16,9 @@
 ##' nhx <- read.nhx(nhxfile)
 ##' write.beast(nhx)
 ##' @author guangchuang yu
-write.beast <- function(treedata, file = "", translate = TRUE, tree.name = "UNTITLED") {
+write.beast <- function(treedata, file = "",
+                        translate = TRUE, tree.name = "UNTITLED") {
+
     cat("#NEXUS\n", file = file)
     cat(paste("[R-package treeio, ", date(), "]\n\n", sep = ""),
         file = file, append = TRUE)
@@ -65,31 +67,48 @@ write.beast <- function(treedata, file = "", translate = TRUE, tree.name = "UNTI
     cat("END;\n", file = file, append = TRUE)
 }
 
-write_beast_newick <- function(treedata, file = "", append = FALSE, digits = 10, tree.prefix = "") {
+write_beast_newick <- function(treedata, file = "",
+                               append = FALSE, digits = 10, tree.prefix = "") {
+
     phy <- as.phylo(treedata)
 
     anno <- get_tree_data(treedata)
-    anno <- anno[!colnames(anno) %in% c('subs', "AA_subs")] ## currently substitution is not supported
+    ## currently substitution is not supported
+    anno <- anno[!colnames(anno) %in% c('subs', "AA_subs")]
 
     cn <- colnames(anno)
-    col_type <- sapply(anno, class)
+    col_type <- vapply(anno, class, character(1))
     yy <- lapply(which(!cn %in% c('node', 'label')), function(i) {
         v <- cn[i]
         ## apply sprintf(f.d, anno[[v]]) to round digits?
 
         if (col_type[i] == "list") {
-            paste0(v, "={", sapply(anno[[v]], function(x) paste(x, collapse=',')), "}")
+            rr <- paste0(
+                v, "={",
+                vapply(anno[[v]], function(x) {
+                    paste(x, collapse=',')
+                }, character(1)),
+                "}")
         } else {
-            paste0(v, '=', anno[[v]])
+            rr <- paste0(v, '=', anno[[v]])
         }
-
+        rr[is.na(anno[[v]])] <- NA
+        return(rr)
     }) %>% do.call('cbind', .)
 
-    anno_text <- sapply(1:nrow(yy), function(i) paste0('[&', paste(yy[i,], collapse=','), ']'))
+    anno_text <- vapply(seq_len(nrow(yy)), function(i) {
+        rr <- yy[i,]
+        rr <- rr[!is.na(rr)]
+        if (length(rr) == 0) {
+            return("")
+        }
+        paste0('[&', paste(rr, collapse=','), ']')
+    }, character(1))
     node_anno <- rep(NA, max(anno$node))
     node_anno[anno$node] <- anno_text
 
-    res <- .write.tree3(phy, digits = digits, tree.prefix = tree.prefix, node_anno = node_anno)
+    res <- .write.tree3(phy, digits = digits,
+                        tree.prefix = tree.prefix, node_anno = node_anno)
 
     if (file == "") return(res)
 
@@ -139,7 +158,7 @@ write_beast_newick <- function(treedata, file = "", append = FALSE, digits = 10,
 
     add.terminal <- function(i) {
         ii <- phy$edge[i, 2]
-        if (is.null(node_anno) && !is.na(node_anno[ii])) {
+        if (is.null(node_anno) || is.na(node_anno[ii])) {
             tl <- phy$tip.label[ii]
         } else {
             tl <- paste0(phy$tip.label[ii], node_anno[ii])
@@ -157,7 +176,7 @@ write_beast_newick <- function(treedata, file = "", append = FALSE, digits = 10,
     parent <- phy$edge[, 1]
     children <- phy$edge[, 2]
     kids <- vector("list", n + phy$Nnode)
-    for (i in 1:length(parent))
+    for (i in seq_along(parent))
         kids[[parent[i]]] <- c(kids[[parent[i]]], children[i])
 
     ind <- match(1:max(phy$edge), phy$edge[, 2])
