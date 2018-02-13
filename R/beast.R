@@ -24,7 +24,7 @@ read.beast <- function(file, mc.cores=1) {
     } else {
         obj <- my.lapply(seq_along(treetext), function(i) {
             BEAST(file, treetext[i], stats[[i]], phylo[[i]])
-        }, mc.cores=mc.cores)
+        })
         class(obj) <- "beastList"
     }
     return(obj)
