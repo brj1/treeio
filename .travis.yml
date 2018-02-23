@@ -9,8 +9,6 @@ bioc_required: true
 
 os:
   - linux
-  - osx
-
 
 r_packages:
   - covr
@@ -32,7 +30,7 @@ after_failure:
   - ./travis-tool.sh dump_logs
 
 after_success:
-- Rscript -e 'library(covr); codecov()'
+  - Rscript -e 'library(covr); codecov()'
 
 notifications:
   email:
