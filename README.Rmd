@@ -14,8 +14,6 @@ html_preview: false
 #library("txtplot")
 library("badger")
 library("ypages")
-library("ggplot2")
-library("yyplot")
 ```
 
 <img src="https://raw.githubusercontent.com/Bioconductor/BiocStickers/master/treeio/treeio.png" height="200" align="right" />
@@ -27,6 +25,8 @@ library("yyplot")
 [![](https://badges.ropensci.org/179_status.svg)](https://github.com/ropensci/onboarding/issues/179)
 
 
+
+
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![codecov](https://codecov.io/gh/GuangchuangYu/treeio/branch/master/graph/badge.svg)](https://codecov.io/gh/GuangchuangYu/treeio)
 [![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-green.svg)](https://github.com/GuangchuangYu/treeio/commits/master)
@@ -36,14 +36,32 @@ library("yyplot")
 
 [![platform](http://www.bioconductor.org/shields/availability/devel/treeio.svg)](https://www.bioconductor.org/packages/devel/bioc/html/treeio.html#archives)
 [![Build Status](http://www.bioconductor.org/shields/build/devel/bioc/treeio.svg)](https://bioconductor.org/checkResults/devel/bioc-LATEST/treeio/)
-[![Linux/Mac Travis Build Status](https://img.shields.io/travis/GuangchuangYu/treeio/master.svg?label=Mac%20OSX%20%26%20Linux)](https://travis-ci.org/GuangchuangYu/treeio)
+[![Linux Travis Build Status](https://img.shields.io/travis/GuangchuangYu/treeio/master.svg?label=Linux)](https://travis-ci.org/GuangchuangYu/treeio)
 [![AppVeyor Build Status](https://img.shields.io/appveyor/ci/Guangchuangyu/treeio/master.svg?label=Windows)](https://ci.appveyor.com/project/GuangchuangYu/treeio)
-[![Twitter](https://img.shields.io/twitter/url/https/github.com/GuangchuangYu/treeio.svg?style=social)](https://twitter.com/intent/tweet?hashtags=treeio&url=http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12628/abstract&screen_name=guangchuangyu)
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/GuangchuangYu)
 
 
-```{r comment="", echo=FALSE, results='asis'}
+```{r comment="", echo=FALSE, results='asis', eval=FALSE}
 cat(packageDescription('treeio')$Description)
 ```
+
+`treeio` is an R package to make it easier to import and store phylogenetic tree
+with associated data; and to link external data from different sources to
+phylogeny. It also supports exporting phylogenetic tree with heterogeneous
+associated data to a single tree file and can be served as a platform for
+merging tree with associated data and converting file formats.
+
+See the `treeio` project website, <https://guangchuangyu.github.io/software/treeio>, and
+package vignettes for more details.
+
+### Vignettes
+
++ [Importing trees with data](http://bioconductor.org/packages/devel/bioc/vignettes/treeio/inst/doc/Importer.html)
++ [Exporting trees with data](http://bioconductor.org/packages/devel/bioc/vignettes/treeio/inst/doc/Exporter.html)
+
+[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?hashtags=treeio&url=http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12628/abstract&screen_name=guangchuangyu)
+`r badger::badge_custom("follow me on", "微信", "green", "https://guangchuangyu.github.io/blog_images/biobabble.jpg")`
+`r badger::badge_custom("打赏", "支付宝/微信", "green", "https://guangchuangyu.github.io/blog_images/pay_qrcode.png")`
 
 
 ## Authors
@@ -70,16 +88,6 @@ Or the development version from github:
 devtools::install_github("GuangchuangYu/treeio")
 ```
 
-
-## Vignettes
-
-+ [Importing trees with data](http://bioconductor.org/packages/devel/bioc/vignettes/treeio/inst/doc/Importer.html)
-+ [Exporting trees with data](http://bioconductor.org/packages/devel/bioc/vignettes/treeio/inst/doc/Exporter.html)
-
-
-For details, please visit our project website, <https://guangchuangyu.github.io/treeio>.
-
-
 ## Download stats
 
 `r badge_download_bioc("treeio")`
@@ -87,16 +95,19 @@ For details, please visit our project website, <https://guangchuangyu.github.io/
 `r badge_bioc_download("treeio", "month", "blue")`
 
 
-```{r echo=F, comment=NA}
-x <- dlstats::bioc_stats("treeio")
-x <- x[-nrow(x), ] # last month data is not complete
-p <- ggplot(x, aes(end, Nb_of_distinct_IPs)) + geom_point() + geom_line() +
-    theme_minimal() +xlab(NULL) + ylab(NULL) +
-    labs(title="treeio", subtitle="Monthly download stats (distinct IPs)", caption="data from Bioconductor")
-ggsave(p, file="docs/images/dlstats.png", width=8, height=4)
-```
-
-<img src="docs/images/dlstats.png" width="890"/>
+<img src="https://guangchuangyu.github.io/software/treeio/index_files/figure-html/unnamed-chunk-2-1.png" width="890"/>
 
 
+## Contributing
+
+We welcome any contributions! By participating in this project you agree to
+abide by the terms outlined in the [Contributor Code of Conduct](CONDUCT.md).
+
+
+## Package Affiliations
+
+The `treeio` package is a part of the Bioconductor and rOpenSci projects.
+
+| [![bioconductor_footer](http://bioconductor.org/images/logo_bioconductor.gif)](http://bioconductor.org) | [![ropensci_footer](http://ropensci.org/public_images/github_footer.png)](http://ropensci.org) |
+|:-------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
 

@@ -12,6 +12,9 @@ rd:
 readme:
 	Rscript -e 'rmarkdown::render("README.Rmd")'
 
+codemetar:
+	Rscript -e 'codemetar::write_codemeta()'
+
 sticker:
 	Rscript -e 'source("treeio_sticker.R")';
 	rm Rplots.pdf
@@ -66,13 +69,14 @@ preview:
 	rm themes;\
 	cd ..
 
-
-
 gitmaintain:
 	git gc --auto;\
 	git prune -v;\
 	git fsck --full
 
+release:
+	git checkout RELEASE_3_6;\
+	git fetch --all
 
 update:
 	git fetch --all;\

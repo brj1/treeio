@@ -1,3 +1,18 @@
+# treeio 1.3.13
+
++ mv project website to <https://guangchuangyu.github.io/software/treeio>
++ update for rOpenSci acceptance
+  - <https://github.com/ropensci/onboarding/issues/179#issuecomment-372127781>
+
+
+# treeio 1.3.12
+
++ read.beast now compatible with taxa label contains ', " and space (2018-02-27,
+  Wed)
++ update according to rOpenSci comments (2018-02-26, Mon)
+  - <https://github.com/ropensci/onboarding/issues/179#issuecomment-365144565>
+  - <https://github.com/ropensci/onboarding/issues/179#issuecomment-366800716>
+
 # treeio 1.3.11
 
 + deprecate read.phyloT as read.tree in ape v5 now supports phyloT newick text
